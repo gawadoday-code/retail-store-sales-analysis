@@ -1,0 +1,120 @@
+{
+  "global_numeric_tests": [
+    {
+      "question": "Transaction value differs by category",
+      "test": "Kruskal\u2013Wallis",
+      "statistic": 43.646559326310275,
+      "p_value": 2.5016218082337e-07,
+      "effect_size": 0.0030633251965485474,
+      "fdr_p_value": 3.00194616988044e-06,
+      "practical_interpretation": "Differences may be statistically detectable because the sample is large, but the overall practical separation is negligible."
+    },
+    {
+      "question": "Transaction value differs by location",
+      "test": "Kruskal\u2013Wallis",
+      "statistic": 1.3894785218928603,
+      "p_value": 0.23849318452381202,
+      "effect_size": 3.254060672511156e-05,
+      "fdr_p_value": 0.5821788509041335,
+      "practical_interpretation": "Differences may be statistically detectable because the sample is large, but the overall practical separation is negligible."
+    },
+    {
+      "question": "Transaction value differs by payment method",
+      "test": "Kruskal\u2013Wallis",
+      "statistic": 1.8928853652161233,
+      "p_value": 0.388119233936089,
+      "effect_size": 0.0,
+      "fdr_p_value": 0.5821788509041335,
+      "practical_interpretation": "Differences may be statistically detectable because the sample is large, but the overall practical separation is negligible."
+    },
+    {
+      "question": "Transaction value differs by recorded discount status",
+      "test": "Kruskal\u2013Wallis",
+      "statistic": 2.0368148622503406,
+      "p_value": 0.3611696699781457,
+      "effect_size": 3.0761081425752495e-06,
+      "fdr_p_value": 0.5821788509041335,
+      "practical_interpretation": "Differences may be statistically detectable because the sample is large, but the overall practical separation is negligible."
+    },
+    {
+      "question": "Known discount groups: transaction value Yes vs No",
+      "test": "Mann\u2013Whitney U",
+      "statistic": 7937790.0,
+      "p_value": 0.7866359785365405,
+      "effect_size": -0.003498518264278938,
+      "fdr_p_value": 0.8581483402216805,
+      "practical_interpretation": "Interpret with effect size and confidence interval, not p-value alone."
+    },
+    {
+      "question": "Unit price is associated with quantity purchased",
+      "test": "Spearman correlation",
+      "statistic": 0.010383330117826592,
+      "p_value": 0.2559676222188154,
+      "effect_size": 0.010383330117826592,
+      "fdr_p_value": 0.5821788509041335,
+      "practical_interpretation": "The relationship is weak if |rho| is small; pricing decisions require controlled experiments and demand context."
+    },
+    {
+      "question": "Monthly recorded revenue shows a monotonic time trend",
+      "test": "Spearman trend test",
+      "statistic": 0.1801801801801802,
+      "p_value": 0.2929993488556814,
+      "effect_size": 0.1801801801801802,
+      "fdr_p_value": 0.5821788509041335,
+      "practical_interpretation": "A weak trend means month-to-month variation dominates; do not forecast from this association alone."
+    }
+  ],
+  "categorical_tests": [
+    {
+      "question": "Payment-method mix differs by location",
+      "test": "Chi-square test of independence",
+      "chi_square": 0.5318676599247139,
+      "p_value": 0.7664898444848908,
+      "cramers_v": 0.0,
+      "fdr_p_value": 0.8581483402216805,
+      "interpretation": "Association only; availability and channel design may confound the pattern."
+    },
+    {
+      "question": "Product-category mix differs by location",
+      "test": "Chi-square test of independence",
+      "chi_square": 7.919352190965327,
+      "p_value": 0.3397590905874356,
+      "cramers_v": 0.00854816113147213,
+      "fdr_p_value": 0.5821788509041335,
+      "interpretation": "Association only; availability and channel design may confound the pattern."
+    },
+    {
+      "question": "Missing Total Spent is associated with Category",
+      "test": "Chi-square test of independence",
+      "chi_square": 5.775024258371888,
+      "p_value": 0.5662505881795803,
+      "cramers_v": 0.0,
+      "fdr_p_value": 0.7550007842394404,
+      "interpretation": "A significant p-value with tiny V is not practically important."
+    },
+    {
+      "question": "Missing Total Spent is associated with Location",
+      "test": "Chi-square test of independence",
+      "chi_square": 2.4314146786422093,
+      "p_value": 0.11892552914868161,
+      "cramers_v": 0.010669251228820304,
+      "fdr_p_value": 0.5821788509041335,
+      "interpretation": "A significant p-value with tiny V is not practically important."
+    },
+    {
+      "question": "Missing Total Spent is associated with Payment Method",
+      "test": "Chi-square test of independence",
+      "chi_square": 0.16494669832887132,
+      "p_value": 0.9208359785780346,
+      "cramers_v": 0.0,
+      "fdr_p_value": 0.9208359785780346,
+      "interpretation": "A significant p-value with tiny V is not practically important."
+    }
+  ],
+  "cautions": [
+    "P-values are interpreted alongside effect sizes and confidence intervals.",
+    "Large sample size can make trivial differences statistically significant.",
+    "Discount comparisons are descriptive because 33.4% are Unknown.",
+    "No observational result is interpreted as causal."
+  ]
+}

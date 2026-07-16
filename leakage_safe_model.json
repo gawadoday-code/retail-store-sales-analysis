@@ -1,0 +1,128 @@
+{
+  "status": "Experimental portfolio benchmark; not deployment-ready",
+  "prediction_moment": "After product identity and sales channel are known, before quantity and final total are recorded.",
+  "target": "Total Spent",
+  "features": [
+    "Category",
+    "Item",
+    "Location",
+    "Weekday",
+    "Quarter",
+    "Year",
+    "Month"
+  ],
+  "explicitly_excluded": [
+    "Price Per Unit",
+    "Quantity",
+    "Payment Method",
+    "Discount Applied",
+    "Customer ID",
+    "Transaction ID",
+    "all audit/imputation flags"
+  ],
+  "leakage_controls": [
+    "Target and deterministic target components are excluded.",
+    "All internally inferred Item values are masked as Unknown_at_prediction.",
+    "Preprocessing is fit inside each time-series fold.",
+    "Hyperparameter selection uses training-period cross-validation only.",
+    "The chronological holdout is evaluated once after alpha selection."
+  ],
+  "split": {
+    "train_rows": 9500,
+    "holdout_rows": 2471,
+    "train_end": "2024-06-09",
+    "holdout_start": "2024-06-10",
+    "holdout_end": "2025-01-18"
+  },
+  "selection": {
+    "method": "3-fold TimeSeriesSplit on the training period",
+    "candidates": [
+      {
+        "alpha": 0.1,
+        "fold_MAE": [
+          60.46425233576143,
+          59.082416413185626,
+          60.984980909642545
+        ],
+        "mean_MAE": 60.1772165528632,
+        "sd_MAE": 0.9832243239935591
+      },
+      {
+        "alpha": 1.0,
+        "fold_MAE": [
+          60.264069778192386,
+          58.78383516632514,
+          60.9997084024763
+        ],
+        "mean_MAE": 60.015871115664616,
+        "sd_MAE": 1.128594471780359
+      },
+      {
+        "alpha": 10.0,
+        "fold_MAE": [
+          63.43607833615448,
+          60.47272382013323,
+          62.33315373663325
+        ],
+        "mean_MAE": 62.08065196430699,
+        "sd_MAE": 1.4977267293057197
+      },
+      {
+        "alpha": 100.0,
+        "fold_MAE": [
+          73.03785599163263,
+          70.59656820385668,
+          71.22015645866203
+        ],
+        "mean_MAE": 71.61819355138378,
+        "sd_MAE": 1.2683834834437024
+      }
+    ],
+    "selected_alpha": 1.0
+  },
+  "holdout_metrics": {
+    "MAE": 59.59429109874181,
+    "RMSE": 75.21625964410634,
+    "R2": 0.36817911097710954,
+    "MedianAE": 48.57345331044556
+  },
+  "baseline": {
+    "method": "Training-period median",
+    "value": 108.5,
+    "MAE": 76.11776608660462,
+    "RMSE": 96.81642146765867,
+    "R2": -0.04681169667358809,
+    "MedianAE": 65.5
+  },
+  "relative_MAE_improvement": 0.21707777089862132,
+  "subgroup_metrics": {
+    "original_item_rows": {
+      "n": 2355,
+      "MAE": 58.50740662587551,
+      "RMSE": 73.8791828135252,
+      "R2": 0.38870964965349575,
+      "MedianAE": 47.171311290273664
+    },
+    "item_unavailable_rows": {
+      "n": 116,
+      "MAE": 81.65991983667395,
+      "RMSE": 98.51231535652893,
+      "R2": -0.02558936118683164,
+      "MedianAE": 72.03725145068073
+    },
+    "top_10pct_value_rows": {
+      "n": 251,
+      "MAE": 131.2337776156165,
+      "RMSE": 136.3981114903577,
+      "R2": -13.719476482668782,
+      "MedianAE": 131.37305779380551
+    }
+  },
+  "limitations": [
+    "The business value of this prediction moment is not established.",
+    "The same 25 customer identifiers occur in training and holdout periods.",
+    "Item remains a strong proxy for a fixed product price.",
+    "No external retailer, new-customer, or price-change validation is available.",
+    "A modest holdout score does not establish causal or deployment value."
+  ]
+}

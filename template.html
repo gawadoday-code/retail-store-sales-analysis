@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive decision dashboard for the retail store sales analysis portfolio project.">
+  <title>Retail Store Sales Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: #f7f8fa;
+      --foreground: #172033;
+      --card: #ffffff;
+      --card-foreground: #172033;
+      --muted: #e8edf3;
+      --muted-foreground: #5f6b7c;
+      --border: #d7dee8;
+      --input: #ffffff;
+      --primary: #183b66;
+      --primary-foreground: #ffffff;
+      --accent: #e7f0fb;
+      --accent-foreground: #183b66;
+      --viz-series-1: #2563a6;
+      --viz-series-2: #54a8a5;
+      --font-size-base: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #101722;
+        --foreground: #edf2f7;
+        --card: #182230;
+        --card-foreground: #edf2f7;
+        --muted: #263446;
+        --muted-foreground: #b6c0cf;
+        --border: #33445a;
+        --input: #182230;
+        --primary: #bdd8f6;
+        --primary-foreground: #10233d;
+        --accent: #213b58;
+        --accent-foreground: #edf2f7;
+        --viz-series-1: #79b7f2;
+        --viz-series-2: #77c8c4;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--background); color: var(--foreground); font: var(--font-size-base)/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 48px; }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 4vw, 2.35rem); line-height: 1.15; font-weight: 600; }
+    h3 { font-weight: 600; }
+    .subtitle { margin: 0; color: var(--muted-foreground); }
+    .publication-note { margin-top: 8px; color: var(--muted-foreground); font-size: .9rem; }
+    .viz-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+    .form-label { display: grid; gap: 5px; min-width: 145px; font-weight: 600; }
+    .form-select { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: var(--input); color: var(--foreground); padding: 9px 34px 9px 10px; font: inherit; }
+    .btn { border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--foreground); padding: 9px 13px; font: inherit; cursor: pointer; }
+    .btn:hover { background: var(--accent); color: var(--accent-foreground); }
+    .btn:focus-visible, .form-select:focus-visible { outline: 3px solid var(--viz-series-1); outline-offset: 2px; }
+    .viz-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .card { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .viz-stat-value { margin: 4px 0; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .text-muted { color: var(--muted-foreground); }
+    .text-small { font-size: .85rem; }
+    footer { margin-top: 28px; color: var(--muted-foreground); font-size: .85rem; }
+    @media (max-width: 760px) {
+      main { width: min(100% - 20px, 1180px); padding-top: 20px; }
+      .viz-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .form-label { min-width: min(100%, 150px); flex: 1 1 145px; }
+    }
+    @media (max-width: 430px) {
+      .viz-grid { grid-template-columns: 1fr; }
+      .form-label, .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Retail Store Sales Dashboard</h1>
+      <p class="subtitle">Recorded sales, transaction coverage, channel, and category performance</p>
+      <p class="publication-note">Descriptive portfolio dashboard. January 2025 is partial through January 18 and is excluded by default.</p>
+    </header>
+    <div id="retail-decision-dashboard" class="retail-dash">
+  <style>
+    .retail-dash { color: var(--foreground); }
+    .retail-dash .dashboard-controls { margin-bottom: 1rem; }
+    .retail-dash .metrics { margin-bottom: 1rem; }
+    .retail-dash .chart-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+    .retail-dash .chart-region { min-width: 0; }
+    .retail-dash .chart-header { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; flex-wrap: wrap; margin-bottom: .5rem; }
+    .retail-dash .chart-header h3 { margin: 0; }
+    .retail-dash .chart-wrap { position: relative; width: 100%; }
+    .retail-dash .chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .retail-dash .axis-line, .retail-dash .grid-line { stroke: var(--border); stroke-width: 1; }
+    .retail-dash .grid-line { opacity: .65; }
+    .retail-dash .axis-label, .retail-dash .value-label { fill: var(--muted-foreground); font-size: var(--font-size-base); }
+    .retail-dash .bar-label { fill: var(--foreground); font-size: var(--font-size-base); }
+    .retail-dash .trend-line { fill: none; stroke: var(--viz-series-1); stroke-width: 3; }
+    .retail-dash .trend-dot { fill: var(--viz-series-1); stroke: var(--background); stroke-width: 1.5; }
+    .retail-dash .bar { fill: var(--viz-series-2); }
+    .retail-dash .selected-bar { fill: var(--viz-series-1); }
+    .retail-dash .selected-label { font-weight: 500; }
+    .retail-dash .partial-band { fill: var(--muted); opacity: .7; }
+    .retail-dash .empty { color: var(--muted-foreground); padding: 1rem 0; }
+    @media (max-width: 680px) {
+      .retail-dash .chart-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <div class="viz-controls dashboard-controls" aria-label="Dashboard filters">
+    <label class="form-label" for="rd-start">Start month
+      <select id="rd-start" class="form-select"></select>
+    </label>
+    <label class="form-label" for="rd-end">End month
+      <select id="rd-end" class="form-select"></select>
+    </label>
+    <label class="form-label" for="rd-location">Channel
+      <select id="rd-location" class="form-select"></select>
+    </label>
+    <label class="form-label" for="rd-category">Category
+      <select id="rd-category" class="form-select"></select>
+    </label>
+    <label class="form-label" for="rd-metric">Breakdown metric
+      <select id="rd-metric" class="form-select">
+        <option value="salesPerTxn">Sales / valid transaction</option>
+        <option value="sales">Recorded sales</option>
+        <option value="valid">Valid transactions</option>
+        <option value="units">Units sold</option>
+      </select>
+    </label>
+    <button id="rd-reset" type="button" class="btn btn-ghost">Reset filters</button>
+  </div>
+
+  <div class="viz-grid metrics" aria-live="polite">
+    <div class="card viz-stat">
+      <div class="text-muted">Recorded sales</div>
+      <div id="rd-sales" class="viz-stat-value">—</div>
+      <div id="rd-sales-context" class="text-small"></div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-muted">Valid transactions</div>
+      <div id="rd-valid" class="viz-stat-value">—</div>
+      <div id="rd-valid-context" class="text-small"></div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-muted">Sales / valid transaction</div>
+      <div id="rd-average" class="viz-stat-value">—</div>
+      <div id="rd-average-context" class="text-small"></div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-muted">Sales-data coverage</div>
+      <div id="rd-coverage" class="viz-stat-value">—</div>
+      <div id="rd-coverage-context" class="text-small"></div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <section class="chart-region" aria-labelledby="rd-trend-title">
+      <div class="chart-header">
+        <h3 id="rd-trend-title">Recorded sales trend</h3>
+        <span id="rd-period-note" class="text-small text-muted"></span>
+      </div>
+      <div id="rd-trend" class="chart-wrap"></div>
+    </section>
+
+    <section class="chart-region" aria-labelledby="rd-breakdown-title">
+      <div class="chart-header">
+        <h3 id="rd-breakdown-title">Category breakdown</h3>
+        <span id="rd-breakdown-note" class="text-small text-muted"></span>
+      </div>
+      <div id="rd-breakdown" class="chart-wrap"></div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      const DATA = __DATA__;
+      const root = document.getElementById("retail-decision-dashboard");
+      const $ = function (id) { return root.querySelector("#" + id); };
+      const months = Array.from(new Set(DATA.map(function (d) { return d.month; }))).sort();
+      const locations = Array.from(new Set(DATA.map(function (d) { return d.Location; }))).sort();
+      const categories = Array.from(new Set(DATA.map(function (d) { return d.Category; }))).sort();
+      const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
+      const integer = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 });
+      const percent = new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 1 });
+
+      function addOptions(select, values, includeAll) {
+        select.innerHTML = "";
+        if (includeAll) {
+          const all = document.createElement("option");
+          all.value = "All";
+          all.textContent = "All";
+          select.appendChild(all);
+        }
+        values.forEach(function (value) {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+      }
+
+      addOptions($("rd-start"), months, false);
+      addOptions($("rd-end"), months, false);
+      addOptions($("rd-location"), locations, true);
+      addOptions($("rd-category"), categories, true);
+      $("rd-start").value = months[0];
+      $("rd-end").value = months[months.length - 1] === "2025-01" ? months[months.length - 2] : months[months.length - 1];
+
+      function filteredRows(ignoreCategory, startOverride, endOverride) {
+        const start = startOverride || $("rd-start").value;
+        const end = endOverride || $("rd-end").value;
+        const location = $("rd-location").value;
+        const category = $("rd-category").value;
+        return DATA.filter(function (d) {
+          return d.month >= start && d.month <= end &&
+            (location === "All" || d.Location === location) &&
+            (ignoreCategory || category === "All" || d.Category === category);
+        });
+      }
+
+      function sum(rows, key) {
+        return rows.reduce(function (total, row) { return total + Number(row[key] || 0); }, 0);
+      }
+
+      function metricValue(group, metric) {
+        if (metric === "salesPerTxn") return group.valid ? group.sales / group.valid : 0;
+        return group[metric] || 0;
+      }
+
+      function formatMetric(value, metric) {
+        if (metric === "valid" || metric === "units") return integer.format(value);
+        return number.format(value);
+      }
+
+      function previousRows(ignoreCategory) {
+        const startIndex = months.indexOf($("rd-start").value);
+        const endIndex = months.indexOf($("rd-end").value);
+        const length = endIndex - startIndex + 1;
+        if (length < 1 || startIndex - length < 0) return null;
+        return filteredRows(ignoreCategory, months[startIndex - length], months[startIndex - 1]);
+      }
+
+      function deltaText(current, previous) {
+        if (previous === null || previous === undefined) return "No prior comparable period";
+        if (previous === 0) return current === 0 ? "No change vs previous period" : "Previous period was zero";
+        const change = (current - previous) / Math.abs(previous);
+        const sign = change > 0 ? "+" : "";
+        return sign + percent.format(change) + " vs previous equal-length period";
+      }
+
+      function escapeText(value) {
+        return String(value).replace(/[&<>"']/g, function (char) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[char];
+        });
+      }
+
+      function renderTrend(rows) {
+        const grouped = new Map();
+        rows.forEach(function (row) {
+          const item = grouped.get(row.month) || { month: row.month, sales: 0 };
+          item.sales += Number(row.sales || 0);
+          grouped.set(row.month, item);
+        });
+        const points = Array.from(grouped.values()).sort(function (a, b) { return a.month.localeCompare(b.month); });
+        if (!points.length) {
+          $("rd-trend").innerHTML = '<div class="empty">No data for the selected filters.</div>';
+          return;
+        }
+        const width = 720, height = 300, left = 66, right = 18, top = 18, bottom = 42;
+        const plotW = width - left - right, plotH = height - top - bottom;
+        const maxY = Math.max.apply(null, points.map(function (d) { return d.sales; })) || 1;
+        const x = function (i) { return left + (points.length === 1 ? plotW / 2 : i * plotW / (points.length - 1)); };
+        const y = function (v) { return top + plotH - v / maxY * plotH; };
+        const path = points.map(function (d, i) { return (i ? "L" : "M") + x(i).toFixed(2) + " " + y(d.sales).toFixed(2); }).join(" ");
+        let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-labelledby="rd-trend-svg-title rd-trend-svg-desc">';
+        svg += '<title id="rd-trend-svg-title">Monthly recorded sales</title><desc id="rd-trend-svg-desc">Monthly recorded sales for the selected period and filters.</desc>';
+        points.forEach(function (d, i) {
+          if (d.month === "2025-01") {
+            const bandWidth = points.length === 1 ? plotW : Math.max(12, plotW / Math.max(1, points.length - 1));
+            svg += '<rect class="partial-band" x="' + Math.max(left, x(i) - bandWidth / 2) + '" y="' + top + '" width="' + Math.min(bandWidth, width - right - Math.max(left, x(i) - bandWidth / 2)) + '" height="' + plotH + '"><title>Partial month through January 18</title></rect>';
+          }
+        });
+        for (let i = 0; i <= 4; i += 1) {
+          const value = maxY * i / 4;
+          const py = y(value);
+          svg += '<line class="grid-line" x1="' + left + '" y1="' + py + '" x2="' + (width - right) + '" y2="' + py + '"></line>';
+          svg += '<text class="axis-label" x="' + (left - 9) + '" y="' + (py + 4) + '" text-anchor="end">' + escapeText(integer.format(value)) + '</text>';
+        }
+        const tickStep = Math.max(1, Math.ceil(points.length / 6));
+        points.forEach(function (d, i) {
+          if (i % tickStep === 0 || i === points.length - 1) {
+            svg += '<text class="axis-label" x="' + x(i) + '" y="' + (height - 12) + '" text-anchor="middle">' + escapeText(d.month) + '</text>';
+          }
+        });
+        svg += '<path class="trend-line" d="' + path + '"></path>';
+        points.forEach(function (d, i) {
+          svg += '<circle class="trend-dot" cx="' + x(i) + '" cy="' + y(d.sales) + '" r="3.5"><title>' + escapeText(d.month + ": " + number.format(d.sales)) + '</title></circle>';
+        });
+        svg += '</svg>';
+        $("rd-trend").innerHTML = svg;
+      }
+
+      function renderBreakdown(rows) {
+        const metric = $("rd-metric").value;
+        const grouped = new Map();
+        rows.forEach(function (row) {
+          const item = grouped.get(row.Category) || { name: row.Category, sales: 0, valid: 0, quantityValid: 0, units: 0, rows: 0 };
+          item.sales += Number(row.sales || 0);
+          item.valid += Number(row.valid || 0);
+          item.units += Number(row.units || 0);
+          item.quantityValid += Number(row.quantity_valid || 0);
+          item.rows += Number(row.rows || 0);
+          grouped.set(row.Category, item);
+        });
+        const bars = Array.from(grouped.values()).map(function (d) {
+          d.value = metricValue(d, metric);
+          return d;
+        }).sort(function (a, b) { return b.value - a.value; });
+        if (!bars.length) {
+          $("rd-breakdown").innerHTML = '<div class="empty">No data for the selected filters.</div>';
+          return;
+        }
+        const width = 600, rowH = 46, top = 10, bottom = 12, labelW = 250, valueW = 76;
+        const height = top + bottom + bars.length * rowH;
+        const plotW = width - labelW - valueW;
+        const maxValue = Math.max.apply(null, bars.map(function (d) { return d.value; })) || 1;
+        let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-labelledby="rd-bars-svg-title rd-bars-svg-desc">';
+        svg += '<title id="rd-bars-svg-title">Category performance breakdown</title><desc id="rd-bars-svg-desc">Categories sorted by the selected metric.</desc>';
+        bars.forEach(function (d, i) {
+          const py = top + i * rowH;
+          const barW = d.value / maxValue * plotW;
+          const selected = $("rd-category").value !== "All" && d.name === $("rd-category").value;
+          const words = d.name.split(" ");
+          let first = "", second = "";
+          words.forEach(function (word) {
+            if ((first + " " + word).trim().length <= 25 || !first) first = (first + " " + word).trim();
+            else second = (second + " " + word).trim();
+          });
+          const labelClass = selected ? "bar-label selected-label" : "bar-label";
+          if (second) {
+            svg += '<text class="' + labelClass + '" x="0" y="' + (py + 16) + '"><tspan x="0">' + escapeText(first) + '</tspan><tspan x="0" dy="15">' + escapeText(second) + '</tspan></text>';
+          } else {
+            svg += '<text class="' + labelClass + '" x="0" y="' + (py + 26) + '">' + escapeText(first) + '</text>';
+          }
+          svg += '<rect class="bar' + (selected ? " selected-bar" : "") + '" x="' + labelW + '" y="' + (py + 13) + '" width="' + barW + '" height="20" rx="3"><title>' + escapeText(d.name + ": " + formatMetric(d.value, metric) + "; valid sales N " + integer.format(d.valid) + "; quantity N " + integer.format(d.quantityValid)) + '</title></rect>';
+          svg += '<text class="value-label" x="' + (width - 2) + '" y="' + (py + 28) + '" text-anchor="end">' + escapeText(formatMetric(d.value, metric)) + '</text>';
+        });
+        svg += '</svg>';
+        $("rd-breakdown").innerHTML = svg;
+      }
+
+      function render() {
+        if ($("rd-start").value > $("rd-end").value) {
+          $("rd-end").value = $("rd-start").value;
+        }
+        const rows = filteredRows(false);
+        const prior = previousRows(false);
+        const totalRows = sum(rows, "rows");
+        const valid = sum(rows, "valid");
+        const sales = sum(rows, "sales");
+        const coverage = totalRows ? valid / totalRows : 0;
+        const previousSales = prior ? sum(prior, "sales") : null;
+        const previousValid = prior ? sum(prior, "valid") : null;
+        const previousAverage = prior && previousValid ? previousSales / previousValid : null;
+        $("rd-sales").textContent = number.format(sales);
+        $("rd-sales-context").textContent = deltaText(sales, previousSales);
+        $("rd-valid").textContent = integer.format(valid);
+        $("rd-valid-context").textContent = deltaText(valid, previousValid);
+        $("rd-average").textContent = valid ? number.format(sales / valid) : "—";
+        $("rd-average-context").textContent = valid ? deltaText(sales / valid, previousAverage) : "No valid sales records";
+        $("rd-coverage").textContent = totalRows ? percent.format(coverage) : "—";
+        $("rd-coverage-context").textContent = totalRows ? integer.format(valid) + " of " + integer.format(totalRows) + " transactions" : "No selected transactions";
+        const includesPartial = $("rd-start").value <= "2025-01" && $("rd-end").value >= "2025-01";
+        $("rd-period-note").textContent = includesPartial ? "2025-01 is partial through Jan 18" : "Monthly totals";
+        const metricLabels = { salesPerTxn: "Sales / valid transaction", sales: "Recorded sales", valid: "Valid transactions", units: "Units sold" };
+        const breakdownRows = filteredRows(true);
+        const selectedText = $("rd-category").value === "All" ? "" : " · selected category highlighted";
+        const quantityCoverage = sum(breakdownRows, "rows") ? sum(breakdownRows, "quantity_valid") / sum(breakdownRows, "rows") : 0;
+        const quantityText = $("rd-metric").value === "units" ? " · quantity coverage " + percent.format(quantityCoverage) : "";
+        $("rd-breakdown-note").textContent = metricLabels[$("rd-metric").value] + selectedText + quantityText;
+        renderTrend(rows);
+        renderBreakdown(breakdownRows);
+      }
+
+      ["rd-start", "rd-end", "rd-location", "rd-category", "rd-metric"].forEach(function (id) {
+        $(id).addEventListener("change", render);
+      });
+      $("rd-reset").addEventListener("click", function () {
+        $("rd-start").value = months[0];
+        $("rd-end").value = months[months.length - 1] === "2025-01" ? months[months.length - 2] : months[months.length - 1];
+        $("rd-location").value = "All";
+        $("rd-category").value = "All";
+        $("rd-metric").value = "salesPerTxn";
+        render();
+      });
+      render();
+    }());
+  </script>
+</div>
+
+    <footer>Source: cleaned analytical dataset. Currency, discount, tax, return, and net-sales definitions require source confirmation.</footer>
+  </main>
+</body>
+</html>
+

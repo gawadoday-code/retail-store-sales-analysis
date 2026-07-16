@@ -1,0 +1,88 @@
+{
+  "prediction_question": "Predict Total Spent before transaction completion",
+  "modeling_justified": true,
+  "decision": "Conditionally justified as a portfolio benchmark, not for deployment.",
+  "rows_total": 12575,
+  "rows_modeled": 11971,
+  "train_rows": 9500,
+  "test_rows": 2471,
+  "train_end_date": "2024-06-09",
+  "test_start_date": "2024-06-10",
+  "same_date_overlap": false,
+  "features": [
+    "Customer ID",
+    "Category",
+    "Item",
+    "Payment Method",
+    "Location",
+    "Discount Applied",
+    "Weekday",
+    "Quarter",
+    "Year",
+    "Month"
+  ],
+  "excluded_leakage_features": [
+    "Total Spent",
+    "Price Per Unit",
+    "Quantity",
+    "Transaction ID",
+    "audit/imputation flags"
+  ],
+  "primary_metric": "MAE",
+  "selected_model": "Ridge regression",
+  "selected_holdout_metrics": {
+    "MAE": 59.39988293797684,
+    "RMSE": 74.77801726667883,
+    "R2": 0.37552018450345326,
+    "MedianAE": 48.21432409173502
+  },
+  "baseline_holdout_mae": 76.11776608660462,
+  "relative_mae_improvement": 0.21963181538468493,
+  "ridge_without_customer_id": {
+    "MAE": 59.37550348069291,
+    "RMSE": 74.70218559943672,
+    "R2": 0.3767861002363989,
+    "MedianAE": 47.792540539077635
+  },
+  "oracle_leakage_metrics": {
+    "MAE": 0.0,
+    "RMSE": 0.0,
+    "R2": 1.0,
+    "MedianAE": 0.0
+  },
+  "model_comparison": [
+    {
+      "Model": "Ridge regression",
+      "CV MAE Mean": 61.14617956051347,
+      "CV MAE SD": 1.3285710271694962,
+      "CV RMSE Mean": 77.50141912121255,
+      "CV R2 Mean": 0.32500092568483524,
+      "Holdout MAE": 59.39988293797684,
+      "Holdout RMSE": 74.77801726667883,
+      "Holdout R2": 0.37552018450345326,
+      "Holdout MedianAE": 48.21432409173502
+    },
+    {
+      "Model": "Random forest",
+      "CV MAE Mean": 64.5263015383012,
+      "CV MAE SD": 4.4002286549856935,
+      "CV RMSE Mean": 81.05188464868519,
+      "CV R2 Mean": 0.25941568388331476,
+      "Holdout MAE": 59.674707993164354,
+      "Holdout RMSE": 75.3445910841725,
+      "Holdout R2": 0.366021288851055,
+      "Holdout MedianAE": 49.0326460800326
+    },
+    {
+      "Model": "Median baseline",
+      "CV MAE Mean": 75.54231578947368,
+      "CV MAE SD": 0.7784716802629207,
+      "CV RMSE Mean": 96.72133321992537,
+      "CV R2 Mean": -0.05080596352104072,
+      "Holdout MAE": 76.11776608660462,
+      "Holdout RMSE": 96.81642146765867,
+      "Holdout R2": -0.04681169667358809,
+      "Holdout MedianAE": 65.5
+    }
+  ]
+}

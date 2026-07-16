@@ -1,0 +1,175 @@
+{
+  "analysis_type": "Exploratory observational analysis",
+  "numeric_tests": [
+    {
+      "question": "Transaction-value distributions differ by Category",
+      "test": "Kruskal-Wallis",
+      "group_column": "Category",
+      "n": 11971,
+      "groups": 8,
+      "statistic": 43.646559326303,
+      "p_value": 2.501621808241804e-07,
+      "effect_size_epsilon_squared": 0.0030633251965479394,
+      "interpretation_rule": "Distributional association only; not a causal group effect.",
+      "fdr_p_value": 3.001946169890165e-06
+    },
+    {
+      "question": "Transaction-value distributions differ by Location",
+      "test": "Kruskal-Wallis",
+      "group_column": "Location",
+      "n": 11971,
+      "groups": 2,
+      "statistic": 1.3894785218928603,
+      "p_value": 0.23849318452381202,
+      "effect_size_epsilon_squared": 3.254060672511156e-05,
+      "interpretation_rule": "Distributional association only; not a causal group effect.",
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Transaction-value distributions differ by Payment Method",
+      "test": "Kruskal-Wallis",
+      "group_column": "Payment Method",
+      "n": 11971,
+      "groups": 3,
+      "statistic": 1.8928853652161233,
+      "p_value": 0.388119233936089,
+      "effect_size_epsilon_squared": 0.0,
+      "interpretation_rule": "Distributional association only; not a causal group effect.",
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Transaction-value distributions differ by Discount Applied",
+      "test": "Kruskal-Wallis",
+      "group_column": "Discount Applied",
+      "n": 11971,
+      "groups": 3,
+      "statistic": 2.0368148622503406,
+      "p_value": 0.3611696699781457,
+      "effect_size_epsilon_squared": 3.0761081425752495e-06,
+      "interpretation_rule": "Distributional association only; not a causal group effect.",
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Known recorded discount groups: Yes versus No",
+      "test": "Mann-Whitney U",
+      "n": 7983,
+      "statistic": 7937790.0,
+      "p_value": 0.7866359785365405,
+      "effect_size_rank_biserial": -0.003498518264278938,
+      "interpretation_rule": "Descriptive only; discount amount and net-sales semantics are unavailable.",
+      "fdr_p_value": 0.8581483402216805
+    },
+    {
+      "question": "Unit price is monotonically associated with quantity",
+      "test": "Spearman correlation",
+      "n": 11971,
+      "statistic": 0.010383330117826592,
+      "p_value": 0.2559676222188154,
+      "effect_size_spearman_rho": 0.010383330117826592,
+      "interpretation_rule": "Association only; price is not a randomized treatment.",
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Complete-month recorded sales show a monotonic time trend",
+      "test": "Spearman trend test",
+      "n_months": 36,
+      "excluded_partial_month": "2025-01",
+      "statistic": 0.1801801801801802,
+      "p_value": 0.2929993488556814,
+      "effect_size_spearman_rho": 0.1801801801801802,
+      "interpretation_rule": "A non-significant monotonic test does not rule out seasonality or nonlinear change.",
+      "fdr_p_value": 0.5821788509041335
+    }
+  ],
+  "categorical_tests": [
+    {
+      "question": "Payment-method mix differs by channel",
+      "test": "Chi-square independence",
+      "variables": [
+        "Location",
+        "Payment Method"
+      ],
+      "chi_square": 0.5318676599247139,
+      "degrees_of_freedom": 2,
+      "p_value": 0.7664898444848908,
+      "cramers_v_bias_corrected": 0.0,
+      "minimum_expected_count": 2038.7070377733598,
+      "fdr_p_value": 0.8581483402216805
+    },
+    {
+      "question": "Category mix differs by channel",
+      "test": "Chi-square independence",
+      "variables": [
+        "Location",
+        "Category"
+      ],
+      "chi_square": 7.919352190965327,
+      "degrees_of_freedom": 7,
+      "p_value": 0.3397590905874356,
+      "cramers_v_bias_corrected": 0.00854816113147213,
+      "minimum_expected_count": 755.9195228628231,
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Missing sales is associated with category",
+      "test": "Chi-square independence",
+      "variables": [
+        "Category",
+        "Missing_Total"
+      ],
+      "chi_square": 5.775024258371888,
+      "degrees_of_freedom": 7,
+      "p_value": 0.5662505881795803,
+      "cramers_v_bias_corrected": 0.0,
+      "minimum_expected_count": 73.39260437375745,
+      "fdr_p_value": 0.7550007842394404
+    },
+    {
+      "question": "Missing sales is associated with channel",
+      "test": "Chi-square independence",
+      "variables": [
+        "Location",
+        "Missing_Total"
+      ],
+      "chi_square": 2.4314146786422093,
+      "degrees_of_freedom": 1,
+      "p_value": 0.11892552914868161,
+      "cramers_v_bias_corrected": 0.010669251228820304,
+      "minimum_expected_count": 298.8058846918489,
+      "fdr_p_value": 0.5821788509041335
+    },
+    {
+      "question": "Missing sales is associated with payment method",
+      "test": "Chi-square independence",
+      "variables": [
+        "Payment Method",
+        "Missing_Total"
+      ],
+      "chi_square": 0.1649466983288713,
+      "degrees_of_freedom": 2,
+      "p_value": 0.9208359785780346,
+      "cramers_v_bias_corrected": 0.0,
+      "minimum_expected_count": 197.93908548707753,
+      "fdr_p_value": 0.9208359785780346
+    }
+  ],
+  "cluster_aware_estimate": {
+    "estimand": "Mean recorded transaction value: Online minus In-store",
+    "observed_difference": 1.5604543001329603,
+    "customer_cluster_bootstrap_95pct_ci": [
+      -1.9951229757137952,
+      4.7055082691753
+    ],
+    "customer_clusters": 25,
+    "repetitions": 2000,
+    "seed": 42,
+    "caution": "Only 25 customer clusters are available, so uncertainty remains fragile."
+  },
+  "multiple_testing": "Benjamini-Hochberg FDR across the reported core test family",
+  "global_cautions": [
+    "Rows are repeated observations from only 25 customers and are not fully independent.",
+    "P-values are interpreted with effect sizes and are not causal evidence.",
+    "Weak observed missingness associations do not prove MCAR.",
+    "Recorded discounts cannot be evaluated as treatment effects without discount amount and net-sales definitions."
+  ]
+}

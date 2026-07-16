@@ -1,0 +1,66 @@
+{
+  "rows_before": 12575,
+  "rows_after": 12575,
+  "rows_deleted": 0,
+  "columns_before": 11,
+  "columns_after": 21,
+  "missing_before": {
+    "Transaction ID": 0,
+    "Customer ID": 0,
+    "Category": 0,
+    "Item": 1213,
+    "Price Per Unit": 609,
+    "Quantity": 604,
+    "Total Spent": 604,
+    "Payment Method": 0,
+    "Location": 0,
+    "Transaction Date": 0,
+    "Discount Applied": 4199
+  },
+  "missing_after": {
+    "Transaction ID": 0,
+    "Customer ID": 0,
+    "Category": 0,
+    "Item": 0,
+    "Price Per Unit": 0,
+    "Quantity": 604,
+    "Total Spent": 604,
+    "Payment Method": 0,
+    "Location": 0,
+    "Transaction Date": 0,
+    "Discount Applied": 0
+  },
+  "transformations": {
+    "Discount True\u2192Yes": 4219,
+    "Discount False\u2192No": 4157,
+    "Discount missing\u2192Unknown": 4199,
+    "Price derived from Total/Quantity": 609,
+    "Item inferred from unique Category+Price": 1213
+  },
+  "outlier_rule": {
+    "method": "IQR 1.5\u00d7",
+    "q1": 51.0,
+    "q3": 192.0,
+    "lower_bound": -160.5,
+    "upper_bound": 403.5,
+    "flagged_rows": 60,
+    "treatment": "Flagged only; no deletion or winsorization"
+  },
+  "full_duplicate_rows_after": 0,
+  "validation_checks": {
+    "raw_file_unchanged_and_exists": true,
+    "row_count_unchanged": true,
+    "transaction_ids_complete": true,
+    "transaction_ids_unique": true,
+    "no_rows_deleted": true,
+    "no_arithmetic_issues": true,
+    "all_dates_parseable": true,
+    "discount_standardized": true
+  },
+  "domain_decisions_not_assumed": [
+    "Missing Discount Applied was not converted to No; it remains Unknown.",
+    "Quantity and Total Spent were not imputed when both were missing.",
+    "No row was deleted.",
+    "Outliers were flagged but retained."
+  ]
+}

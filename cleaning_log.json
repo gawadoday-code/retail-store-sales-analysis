@@ -1,0 +1,62 @@
+{
+  "input": "data/raw/retail_store_sales.csv",
+  "output": "data/processed/retail_store_sales_cleaned.csv",
+  "raw_sha256": "79181a5ac74a35dbf65063c3850c05183fdb7a15734859b2d8ac272c8b204a93",
+  "rows_before": 12575,
+  "rows_after": 12575,
+  "missing_before": {
+    "Transaction ID": 0,
+    "Customer ID": 0,
+    "Category": 0,
+    "Item": 1213,
+    "Price Per Unit": 609,
+    "Quantity": 604,
+    "Total Spent": 604,
+    "Payment Method": 0,
+    "Location": 0,
+    "Transaction Date": 0,
+    "Discount Applied": 4199
+  },
+  "missing_after": {
+    "Transaction ID": 0,
+    "Customer ID": 0,
+    "Category": 0,
+    "Item": 0,
+    "Price Per Unit": 0,
+    "Quantity": 604,
+    "Total Spent": 604,
+    "Payment Method": 0,
+    "Location": 0,
+    "Transaction Date": 0,
+    "Discount Applied": 0
+  },
+  "invalid_numeric_values": {
+    "Price Per Unit": 0,
+    "Quantity": 0,
+    "Total Spent": 0
+  },
+  "invalid_dates": 0,
+  "transformations": {
+    "price_derived_from_total_divided_by_quantity": 609,
+    "item_internally_inferred_from_unique_category_price_mapping": 1213,
+    "discount_missing_or_unrecognized_to_unknown": 4199
+  },
+  "outlier_rule": {
+    "method": "IQR 1.5x",
+    "q1": 51.0,
+    "q3": 192.0,
+    "lower_bound": -160.5,
+    "upper_bound": 403.5,
+    "flagged_rows": 60,
+    "treatment": "Flagged only; no deletion or winsorization"
+  },
+  "validation_checks": {
+    "raw_sha256_unchanged": true,
+    "row_count_unchanged": true,
+    "transaction_ids_complete": true,
+    "transaction_ids_unique": true,
+    "no_arithmetic_issues": true,
+    "all_dates_parseable": true,
+    "discount_standardized": true
+  }
+}
