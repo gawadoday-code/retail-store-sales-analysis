@@ -1,0 +1,44 @@
+name: Project checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile Python source
+        run: python -m compileall -q src tests
+
+      - name: Run data and SQL tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Validate the cleaned dataset
+        run: >-
+          python src/validate_data.py
+          --input data/processed/retail_store_sales_cleaned.csv
+          --output reports/generated/validation_summary.json
+
+      - name: Rebuild dashboard
+        run: >-
+          python src/build_dashboard.py
+          --input data/processed/retail_store_sales_cleaned.csv
+          --template dashboard/template.html
+          --output dashboard/index.html
+
+      - name: Test dashboard interactions
+        run: node tests/dashboard_runtime_check.js
+
